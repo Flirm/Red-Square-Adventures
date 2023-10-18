@@ -1,7 +1,5 @@
 from pplay.sprite import Sprite
 from pplay.window import Window
-from pplay.gameimage import load_image
-import pygame
 
 class Player(Sprite):
 
