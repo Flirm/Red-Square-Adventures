@@ -18,10 +18,7 @@ def game(window):
         #player actions
         player.movement(400*window.delta_time())
 
-
         #update phase
         window.update()
         window.set_background_color([0,0,0])
         player.draw()
-
-# Esse é o tal do commit???
