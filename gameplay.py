@@ -23,5 +23,3 @@ def game(window):
         window.update()
         window.set_background_color([0,0,0])
         player.draw()
-
-# Esse é o tal do commit???
