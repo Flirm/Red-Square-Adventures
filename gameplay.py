@@ -17,6 +17,11 @@ def game(window):
 
         #player actions
         player.movement(400*window.delta_time())
+        player.jump(globalSettings.jumpForce*window.delta_time())
+        player.gravity(globalSettings.gravForce*window.delta_time())
+        #testing gravity with random window height
+        if player.y >= window.height-player.height:
+            globalSettings.grounded = True
 
         #update phase
         window.update()

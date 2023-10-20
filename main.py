@@ -4,5 +4,5 @@ import globalSettings
 
 window = Window(1280,720)
 
-globalSettings.init()
+globalSettings.initPlayer()
 menus.mainMenu(window)

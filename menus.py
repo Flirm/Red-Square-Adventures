@@ -15,7 +15,7 @@ def mainMenu(window):
         if window.mouse.is_over_object(playButton):
             if window.mouse.is_button_pressed(1):
                 gameplay.game(window)
-
+                
 
         #update phase
         window.update()
