@@ -10,10 +10,10 @@ def initPlayer():
     global jumpDelay
     jumpDelay = False
     global jumpForce
-    jumpForce = 100
+    jumpForce = 200
 
     #variables to handle gravity
     global grounded
     grounded = True
     global gravForce
-    gravForce = 1
+    gravForce = 5
