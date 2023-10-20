@@ -35,7 +35,7 @@ class Player(Sprite):
 
         #if is jumping update y value, jumping loses force with time in air
         if globalSettings.jumpDelay == True:
-            self.y -= force*5
+            self.y -= force*(5+force)
             if globalSettings.jumpForce > 0:
                 globalSettings.jumpForce -= 0.1
             else:
@@ -45,13 +45,14 @@ class Player(Sprite):
     def gravity(self, gForce):
         #if jump ended and not on ground, start falling
         if globalSettings.jumpForce == 0 and not globalSettings.grounded:
-            self.y += gForce*5
+            self.y += gForce*(5+gForce)
             if globalSettings.gravForce < 500:
                 globalSettings.gravForce += 0.1
         #if on gorund resets jumping state
         elif globalSettings.grounded:
             globalSettings.jumpDelay = False
             globalSettings.jumpForce = 100
+            globalSettings.gravForce = 1
         
     
 

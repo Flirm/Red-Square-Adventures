@@ -6,7 +6,7 @@ def game(window):
 
     #init phase
     player = Player("sprites/redSquare.png")
-    player.set_position(window.width/2, window.height/2)
+    player.set_position(window.width/2, window.height-player.height)
 
     #main loop
     while True:
