@@ -17,3 +17,11 @@ def initPlayer():
     grounded = True
     global gravForce
     gravForce = 5
+
+    #player changing variables
+    global playerLife
+    playerLife = 100
+    global playerEnergy
+    playerEnergy = 50
+    global money
+    money = 0
