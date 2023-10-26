@@ -2,12 +2,17 @@ from pplay.sprite import *
 from pplay.window import *
 from gameClasses.player import *
 from pplay.text import *
+from gameClasses.sword import *
 
 def game(window):
 
     #init player
     player = Player("sprites/redSquare.png")
     player.set_position(window.width/2, window.height-player.height)
+
+    #init sword
+    sword = Sword("sprites/sword.png")
+    sword.set_position(player.x-3*player.width/4, player.y)
 
     #init money
     moneyText = Text(60, 100, f"Money = {globalSettings.money}", (255,255,255), 24)
@@ -23,6 +28,20 @@ def game(window):
 
         #player actions
         player.movement(400*window.delta_time())
+        sword.attack()
+
+        #handle sword position
+        if globalSettings.attacking:
+            if globalSettings.direction == 0:
+                sword.set_position(player.x+3*player.width/4, player.y)
+            else:
+                sword.set_position(player.x-3*player.width/4, player.y)
+        else:
+            if globalSettings.direction == 0:
+                sword.set_position(player.x-3*player.width/4, player.y)
+            else:
+                sword.set_position(player.x+3*player.width/4, player.y)
+
         player.jump(globalSettings.jumpForce*window.delta_time())
         player.gravity(globalSettings.gravForce*window.delta_time())
         #testing gravity with random window height
@@ -30,7 +49,6 @@ def game(window):
             globalSettings.grounded = True
 
         #update phase#
-        window.update()
         window.set_background_color([0,0,0])
 
         #draw life and energy bars
@@ -40,3 +58,5 @@ def game(window):
         moneyText.update_text(f"Money = {globalSettings.money}")
         moneyText.draw()
         player.draw()
+        sword.draw()
+        window.update()

@@ -10,13 +10,13 @@ def initPlayer():
     global jumpDelay
     jumpDelay = False
     global jumpForce
-    jumpForce = 200
+    jumpForce = 150
 
     #variables to handle gravity
     global grounded
     grounded = True
     global gravForce
-    gravForce = 5
+    gravForce = 10
 
     #player changing variables
     global playerLife
@@ -25,3 +25,6 @@ def initPlayer():
     playerEnergy = 50
     global money
     money = 0
+
+    global attacking
+    attacking = False

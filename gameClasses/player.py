@@ -14,6 +14,9 @@ class Player(Sprite):
         self.image = pygame.image.load(image_file)
         self.flipedImage = pygame.transform.flip(self.image, True, False)
 
+    def get_position(self):
+        return [self.x,self.y]
+
     def movement(self, speed):
 
 
@@ -37,7 +40,7 @@ class Player(Sprite):
         if globalSettings.jumpDelay == True:
             self.y -= force*(5)
             if globalSettings.jumpForce > 0:
-                globalSettings.jumpForce -= 0.2
+                globalSettings.jumpForce -= 0.5
             else:
                 globalSettings.jumpForce = 0
         
@@ -47,12 +50,12 @@ class Player(Sprite):
         if globalSettings.jumpForce == 0 and not globalSettings.grounded:
             self.y += gForce*(5)
             if globalSettings.gravForce < 200:
-                globalSettings.gravForce += 0.2
+                globalSettings.gravForce += 0.5
         #if on gorund resets jumping state
         elif globalSettings.grounded:
             globalSettings.jumpDelay = False
-            globalSettings.jumpForce = 200
-            globalSettings.gravForce = 5
+            globalSettings.jumpForce = 150
+            globalSettings.gravForce = 10
         
     
 
