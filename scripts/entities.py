@@ -161,13 +161,13 @@ class EnemyCylinder(PhysicsEntity):
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
 
         #if x distance < 8 tiles (128 pixels) and y distance < 1 tile (16 pixels), enemy moves towards player
-        if (abs(dis[0]) < 128) and (abs(dis[1]) < 16):
+        if (abs(dis[0]) < 128) and (abs(dis[1]) < 10):
 
             #makes enemy face at player direction
             self.flip = True if dis[0] < 0 else False
 
             #if distance < 5 tiles (128 pixels), stop moving and shoot
-            if(abs(dis[0]) < 80):
+            if(abs(dis[0]) < 80) and (abs(dis[1] < 10)):
                 if not self.in_recover:
                     self.set_action('shooting')
                     #shoots once every 2 seconds
