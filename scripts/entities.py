@@ -156,6 +156,7 @@ class EnemyCylinder(PhysicsEntity):
         self.shoot_delay = 0
         self.walking = 0
         self.in_recover = False
+        self.lock_in = False
 
     def update(self, tilemap, movement=(0,0)):
         #defines distane between player and enemy
@@ -164,24 +165,28 @@ class EnemyCylinder(PhysicsEntity):
         #if x distance < 8 tiles (128 pixels) and y distance < 1 tile (16 pixels), enemy moves towards player
         if (abs(dis[0]) < 128) and (abs(dis[1]) < 10):
 
-            #makes enemy face at player direction
-            self.flip = True if dis[0] < 0 else False
+            #if not aiming at player, can change direction
+            if not self.lock_in:
+                #makes enemy face at player direction
+                self.flip = True if dis[0] < 0 else False
 
             #if distance < 5 tiles (128 pixels), stop moving and shoot
             if(abs(dis[0]) < 80) and (abs(dis[1] < 10)):
                 if not self.in_recover:
                     self.set_action('shooting')
-                    #shoots once every 2 seconds
-                    if self.shoot_delay >= 120:
+                    self.lock_in = True
+                    #shoots once every 1 seconds
+                    if self.shoot_delay >= 50:
                         self.shoot_delay = 0
                         self.in_recover = True
+                        self.set_action('recover')
 
                         #if looking left and player at left
-                        if (self.flip and dis[0] < 0):
+                        if (self.flip):
                             self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
 
                         #if looking right and player at right
-                        if (not self.flip and dis[0] > 0):
+                        if (not self.flip):
                             self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0])
 
                     else:
@@ -197,6 +202,7 @@ class EnemyCylinder(PhysicsEntity):
                 else:
                     pass
         else:
+            self.lock_in = False
             self.shoot_delay = 0
             if self.walking:
                 #check to see if there is a walkable tile in front
@@ -223,6 +229,7 @@ class EnemyCylinder(PhysicsEntity):
             self.set_action('recover')
             if self.animation.done:
                 self.in_recover = False
+                self.lock_in = False
         elif movement[0] != 0:
             self.set_action('run')  
         elif not self.shoot_delay:
