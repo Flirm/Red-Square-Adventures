@@ -47,8 +47,6 @@ class Game:
             'cylinder/run' : Animation(load_images('entities/cylinder/run'), img_dur=4),
             'cylinder/shooting' : Animation(load_images('entities/cylinder/shooting'), loop=False),
             'cylinder/recover' : Animation(load_images('entities/cylinder/recover'), img_dur=8,loop=False),
-            'enemy/idle' : Animation(load_images('entities/enemy/idle'), img_dur=6),
-            'enemy/run' : Animation(load_images('entities/enemy/run'), img_dur=4),
             'player/idle' : Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run' : Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump' : Animation(load_images('entities/player/jump')),
