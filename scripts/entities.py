@@ -150,7 +150,6 @@ class Enemy(PhysicsEntity):
 
 #walks and shoots at player direction
 class EnemyCylinder(PhysicsEntity):
-    #prototype for enemy class before the weapon render, change later
     def __init__(self, game, pos, size):
         super().__init__(game, 'cylinder', pos, size)
         self.shoot_delay = 0
