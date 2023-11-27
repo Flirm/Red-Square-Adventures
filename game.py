@@ -151,8 +151,6 @@ class Game:
                 self.display.blit(self.menu_assets['exit'], (self.display.get_width()/2 - self.menu_assets['exit'].get_width()/2, 9*self.display.get_height()/10 - self.menu_assets['exit'].get_height()/2))
                 self.display.blit(self.menu_assets['title'], (self.display.get_width()/2 - self.menu_assets['title'].get_width()/2, self.display.get_height()/10))
 
-                #changes color of the button that is beeing selected
-
 
                 #input events (change button selected, click button, exit)
                 for event in pygame.event.get():
