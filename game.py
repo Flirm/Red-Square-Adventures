@@ -184,7 +184,7 @@ class Game:
                             new_color_button.replace((250, 116, 27), (250, 143, 65))
                             del new_color_button
 
-                        if event.key == pygame.K_z:
+                        if event.key == pygame.K_z or event.key == pygame.K_RETURN:
 
                             pygame.mixer.Channel(1).play(self.sounds['button_click'])
 
