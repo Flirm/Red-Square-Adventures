@@ -13,6 +13,7 @@ class PhysicsEntity:
         self.size = size
         self.velocity = [0, 0]
         self.collisions = {'up' : False, 'down' : False, 'right' : False, 'left' : False}
+        self.affected_gravity = True
 
         self.action = ''
         self.anim_offset = (-3, -3)
@@ -79,7 +80,8 @@ class PhysicsEntity:
         self.last_movement = movement
 
         #defines vertical velocity with gravity
-        self.velocity[1] = min(5, self.velocity[1] + 0.1)
+        if self.affected_gravity:
+            self.velocity[1] = min(5, self.velocity[1] + 0.1)
 
         #resets gravity if collided with ground or roof
         if self.collisions['down'] or self.collisions['up']:
@@ -236,8 +238,71 @@ class EnemyCylinder(PhysicsEntity):
             self.set_action('idle')
 
 #flies around, if player passes below it, falls
-class EnemyPiramid(Enemy):
-    pass
+class EnemyCone(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, 'cone', pos, size)
+        self.walking = 0
+        self.affected_gravity = False
+        self.recovering = False
+        self.recover_delay = 0
+        self.original_height = pos[1]
+
+    def update(self, tilemap, movement=(0,0)):
+        #defines distance from player
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+
+        #if X distance < 5 pixels, falls
+        if not self.recovering:
+            if abs(dis[0]) < 5:
+                self.affected_gravity = True
+                super().update(tilemap, movement=movement)
+            #if distance from player in X axis < 5 tiles (80 pixels), moves towards player
+            elif abs(dis[0]) < 80:
+                #flip direction faces player
+                self.flip = True if dis[0] < 0 else False
+                
+                #define movement
+                if not self.affected_gravity:
+                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+                super().update(tilemap, movement=movement)
+            elif not self.affected_gravity:
+                #invert direction of movement if collided with wall        
+                if self.collisions['right'] or self.collisions['left']:
+                    self.flip = not self.flip
+                else:   
+                    #defines move direction
+                    if not self.affected_gravity:
+                        movement = (movement[0] - 0.2 if self.flip else 0.2, movement[1])
+                #update walking time
+                self.walking = max(0, self.walking - 1)
+                    
+                #update from parent
+                super().update(tilemap, movement=movement)
+
+                #reset walking time and invert movement
+                if self.walking == 0:
+                    self.walking = 240
+                    self.flip = not self.flip
+
+            if self.affected_gravity and self.collisions['down']:
+                self.recovering = True
+                self.recover_delay = 120
+
+        else:
+            self.recover_delay = max(self.recover_delay - 1, 0)
+            if not self.collisions['up'] and self.pos[1] > self.original_height:
+                if self.recover_delay == 0:
+                    self.affected_gravity = False
+                    movement = (0, movement[1] - 0.5)
+                    super().update(tilemap, movement=movement)
+                    print(movement)
+            else:
+                self.recovering = False
+
+    def render(self, surf, offset=(0, 0)):
+        #render enemy
+        super().render(surf, offset=offset)
+
 
 #walks around, if player gets close, dashes in player direction (mario world's chargin' chuck)
 class EnemyCircle(Enemy):

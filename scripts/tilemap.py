@@ -133,7 +133,7 @@ class Tilemap:
                         #if player distance from it is close and tile type is X, stop scrolling camera in x axis
                         if abs(tile['pos'][0] - player_pos[0]) < (surf.get_width()/2) // self.tile_size + 3 and tile['variant'] == 0:
                             on_border[0] = True
-                        #if  player distance from it is close and tile type is Y, stop scrolling camera in y axis
+                        #if player distance from it is close and tile type is Y, stop scrolling camera in y axis
                         if abs(tile['pos'][1] - player_pos[1]) < (surf.get_height()/2) // self.tile_size + 3 and tile['variant'] == 1:
                             on_border[1] = True
                     surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
