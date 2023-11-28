@@ -295,7 +295,6 @@ class EnemyCone(PhysicsEntity):
                     self.affected_gravity = False
                     movement = (0, movement[1] - 0.5)
                     super().update(tilemap, movement=movement)
-                    print(movement)
             else:
                 self.recovering = False
 
