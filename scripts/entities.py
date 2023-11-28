@@ -279,23 +279,16 @@ class Player(PhysicsEntity):
             self.set_action('wall_slide')
 
         if not self.wall_slide:
+            if abs(self.dashing) > 40:
+                self.set_action('dash')
             #if on air for a 'long' time sets jump anim
-            if self.air_time > 4:
+            elif self.air_time > 4:
                 self.set_action('jump')
             #if moving, sets run anim
             elif movement[0] != 0:
                 self.set_action('run')
             else:
                 self.set_action('idle')
-
-
-        if abs(self.dashing) in {60, 50}:
-            for i in range(20):
-                #getting dash burst particles anim randomly
-                angle = random() * pi * 2
-                speed = random() * 0.5 + 0.5
-                pvelocity = [cos(angle) * speed, sin(angle) * speed]
-                self.game.particles.append(Particle(self.game, 'particle', self.rect().center, velocity=pvelocity, frame=randint(0, 7)))
 
         #brings dash vel closer to 0
         if self.dashing > 0:
@@ -305,16 +298,11 @@ class Player(PhysicsEntity):
         
         #makes vel move player in the first frames, then sudden stop in vel
         if abs(self.dashing) > 50:
-            self.set_action('dash')
             self.velocity[0] = abs(self.dashing) / self.dashing * 5
             if abs(self.dashing) == 51:
                 self.velocity[0] *= 0.1
             #makes gravity not work while in dash
             self.velocity[1] = 0
-
-            #get anim for dash stream
-            pvelocity = [abs(self.dashing) / self.dashing * random() * 3, 0]
-            self.game.particles.append(Particle(self.game, 'particle', self.rect().center, velocity=pvelocity, frame=randint(0, 7)))
 
 
         #adds 'air resistence' to horizontal movement
@@ -325,8 +313,7 @@ class Player(PhysicsEntity):
 
     def render(self, surf, offset=(0, 0)):
         #if not in dash renders normally
-        if abs(self.dashing) <= 50:
-            super().render(surf, offset=offset)
+        super().render(surf, offset=offset)
 
     def jump(self):
         if self.wall_slide and self.wall_jump:
@@ -361,6 +348,7 @@ class Player(PhysicsEntity):
     def dash(self):
         #only dashes if not in dash
         if not self.dashing:
+            self.set_action('dash')
             #defines if dash goes left or right
             if self.flip:
                 self.dashing = -60
