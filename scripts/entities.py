@@ -251,8 +251,9 @@ class EnemyCone(PhysicsEntity):
         #defines distance from player
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
 
-        #if X distance < 5 pixels, falls
+        #if not recovering from fall
         if not self.recovering:
+            #if X distance < 5 pixels, falls
             if abs(dis[0]) < 5:
                 self.affected_gravity = True
                 super().update(tilemap, movement=movement)
@@ -284,18 +285,23 @@ class EnemyCone(PhysicsEntity):
                     self.walking = 240
                     self.flip = not self.flip
 
+            #if is falling and hit ground, start recovering
             if self.affected_gravity and self.collisions['down']:
                 self.recovering = True
                 self.recover_delay = 120
 
         else:
+            #gets recover time delay closer to 0
             self.recover_delay = max(self.recover_delay - 1, 0)
+            #if not hitting roof and height less then original
             if not self.collisions['up'] and self.pos[1] > self.original_height:
+                #if not on delay, goes up
                 if self.recover_delay == 0:
                     self.affected_gravity = False
                     movement = (0, movement[1] - 0.5)
                     super().update(tilemap, movement=movement)
             else:
+                #stop recover phase
                 self.recovering = False
 
     def render(self, surf, offset=(0, 0)):
