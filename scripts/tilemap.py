@@ -112,7 +112,11 @@ class Tilemap:
                 tile['variant'] = AUTOTILE_MAP[neighbors]
 
 
-    def render(self, surf, offset=(0, 0)):
+    def render(self, surf, offset=(0, 0), player_pos=(0, 0)):
+
+        #on border defines if camera hitting border of map in [x, y]
+        on_border = [False, False]
+        player_pos = (player_pos[0]//self.tile_size + 1, player_pos[1]//self.tile_size + 1)
 
         for tile in self.offgrid_tiles:
            surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
@@ -124,6 +128,15 @@ class Tilemap:
                 loc = str(x) + ';' + str(y)
                 if loc in self.tilemap:
                     tile = self.tilemap[loc]
+                    #if there is a border type tile
+                    if tile['type'] == 'border':
+                        #if player distance from it is close, stop scrolling camera in x axis
+                        if abs(tile['pos'][0] - player_pos[0]) < (surf.get_width()/2) // self.tile_size + 3 and tile['variant'] == 0:
+                            on_border[0] = True
+                        if abs(tile['pos'][1] - player_pos[1]) < (surf.get_height()/2) // self.tile_size + 3 and tile['variant'] == 1:
+                            on_border[1] = True
                     surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
+        
+        return on_border
 
         

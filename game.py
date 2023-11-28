@@ -40,6 +40,7 @@ class Game:
             'grass' : load_images('tiles/grass'),
             'large_decor' : load_images('tiles/large_decor'),
             'stone' : load_images('tiles/stone'),
+            'border' : load_images('tiles/border'),
             'player' : load_image('entities/player.png'),
             'background' : load_image('background.png'),
             'clouds' : load_images('clouds'),
@@ -103,6 +104,7 @@ class Game:
 
         #init camera
         self.scroll = [0, 0]
+        self.in_border = [False, False]
 
 
     def menus(self):
@@ -229,9 +231,12 @@ class Game:
             #fills screen with background, avoids image 'shadow'
             self.display.blit(self.assets['background'], (0, 0))
 
+
             #update camera
-            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
-            self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
+            if not self.in_border[0]:
+                self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
+            if not self.in_border[1]:
+                self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
 
             #spawn leaf particles
@@ -246,7 +251,8 @@ class Game:
             self.clouds.render(self.display, offset=render_scroll)
 
             #render map
-            self.tilemap.render(self.display, offset=render_scroll)
+            self.in_border = False
+            self.in_border = self.tilemap.render(self.display, offset=render_scroll, player_pos=self.player.pos)
 
             #updating and rendering enemies
             for enemy in self.enemies.copy():

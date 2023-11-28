@@ -40,6 +40,7 @@ class Editor:
             'grass' : load_images('tiles/grass'),
             'large_decor' : load_images('tiles/large_decor'),
             'stone' : load_images('tiles/stone'),
+            'border' : load_images('tiles/border'),
             'spawners' : load_images('tiles/spawners')
         }
 
@@ -53,7 +54,7 @@ class Editor:
 
         #load map
         try:
-            self.tilemap.load('map.json')
+            self.tilemap.load('data/maps/0.json')
         except FileNotFoundError:
             pass
 
@@ -194,7 +195,7 @@ class Editor:
                         self.tilemap.autotile()
                     #save map
                     if event.key == pygame.K_o:
-                        self.tilemap.save('map.json')
+                        self.tilemap.save('data/maps/0.json')
                     #holding shift enables scroll between tile variants
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True
