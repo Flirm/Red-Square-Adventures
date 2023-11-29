@@ -230,8 +230,6 @@ class EnemyCylinder(PhysicsEntity):
         elif not self.shoot_delay and not self.lock_in:
             self.set_action('idle')
 
-        print(self.action)
-
         super().update(tilemap, movement=movement)
 
 
