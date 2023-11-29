@@ -76,6 +76,9 @@ class Game:
 
         #--------------------------------------------------------------------------#
 
+        self.jump_pos = (0, 0)
+        self.jump_smoke = self.assets['smoke/jump'].copy()
+
         #init tilemap
         self.tilemap = Tilemap(self, tile_size=16)
         self.load_level(0)
@@ -313,6 +316,9 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = True
                     if event.key == pygame.K_z:
+                        if self.player.jumps:
+                            self.jump_smoke = self.assets['smoke/jump'].copy()
+                            self.jump_pos = self.player.pos.copy()                        
                         self.player.jump()
                     if event.key == pygame.K_c:
                         self.player.dash()
@@ -324,6 +330,11 @@ class Game:
                     #if esc is pressed, return to main menu
                     if event.key == pygame.K_ESCAPE:
                         return
+
+            #render smoke animation when player jumps
+            if self.player.action == 'jump':
+                self.jump_smoke.update()
+                self.display.blit(self.jump_smoke.img(), (self.jump_pos[0] - self.jump_smoke.img().get_width()/2 - self.scroll[0], self.jump_pos[1] - self.scroll[1]))
 
             #blits display in screen
             #pygame.transform.scale scales up display to fit in screen
