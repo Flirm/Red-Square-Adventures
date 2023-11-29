@@ -61,7 +61,7 @@ class PhysicsEntity:
         
         for rect in tilemap.physics_rects_around(self.pos):
             if entity_rect.colliderect(rect):
-                #if moving left or right and collide, handles accordingly
+                #if moving up or down and collide, handles accordingly
                 if frame_movement[1] > 0:
                     entity_rect.bottom = rect.top
                     self.collisions['down'] = True
@@ -307,7 +307,32 @@ class EnemyCone(PhysicsEntity):
 
 
 #walks around, if player gets close, dashes in player direction (mario world's chargin' chuck)
-class EnemyCircle(Enemy):
+class EnemyBall(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, 'ball', pos, size)
+        self.walking = 0
+        self.charging = False
+    
+    def update(self, tilemap, movement=(0,0)):
+        if self.walking:
+            #check to see if there is a walkable tile in front
+            #checks 7 pixels to left or right dependent on movement, and 23 pixels below
+            if tilemap.solid_check((self.rect().centerx + (-60 if self.flip else 60), self.pos[1] + 42)):
+                #if collided wall
+                if self.collisions['right'] or self.collisions['left']:
+                    self.flip = not self.flip
+                else:   
+                    #defines move direction
+                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+            else:
+                self.flip = not self.flip
+            self.walking = max(0, self.walking - 1)
+
+        elif random() < 0.01:
+            #random chance to start walking
+            self.walking = randint(30, 120)
+
+        super().update(tilemap, movement=movement)           
     #if charging
         #goes striaght into direction non stop
     #else

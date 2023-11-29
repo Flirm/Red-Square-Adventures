@@ -7,7 +7,7 @@ import pygame
 
 from scripts.tilemap import Tilemap
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import PhysicsEntity, Player, Enemy, EnemyCylinder, EnemyCone
+from scripts.entities import PhysicsEntity, Player, Enemy, EnemyCylinder, EnemyCone, EnemyBall
 from scripts.clouds import Clouds
 from scripts.particle import Particle
 
@@ -49,6 +49,7 @@ class Game:
             'cylinder/shooting' : Animation(load_images('entities/cylinder/shooting'), loop=False),
             'cylinder/recover' : Animation(load_images('entities/cylinder/recover'), img_dur=8,loop=False),
             'cone/idle' : Animation(load_images('entities/cone/idle'), img_dur=20),
+            'ball/idle' : Animation(load_images('entities/ball/idle'), img_dur=20),
             'player/idle' : Animation(load_images('entities/player/idle'), img_dur=6),
             'player/run' : Animation(load_images('entities/player/run'), img_dur=4),
             'player/jump' : Animation(load_images('entities/player/jump')),
@@ -95,13 +96,15 @@ class Game:
 
         #spawing enemies and player from spawners in map
         self.enemies = []
-        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), ('spawners', 2)]):
+        for spawner in self.tilemap.extract([('spawners', 0), ('spawners', 1), ('spawners', 2), ('spawners', 3)]):
             if spawner['variant'] == 0:
                 self.player.pos = spawner['pos']
             elif spawner['variant'] == 1:
                 self.enemies.append(EnemyCylinder(self, spawner['pos'], (8, 15)))
-            else:
+            elif spawner['variant'] == 2:
                 self.enemies.append(EnemyCone(self, spawner['pos'], (16,16)))
+            else:
+                self.enemies.append(EnemyBall(self, spawner['pos'], (33,32)))
             
         #init projectiles list
         self.projectiles = []
