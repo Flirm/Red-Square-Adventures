@@ -310,6 +310,12 @@ class EnemyCone(PhysicsEntity):
 
 #walks around, if player gets close, dashes in player direction (mario world's chargin' chuck)
 class EnemyCircle(Enemy):
+    #if charging
+        #goes striaght into direction non stop
+    #else
+        #wonders
+        #if player close 
+            #start charging
     pass
 
         
