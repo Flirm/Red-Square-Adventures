@@ -164,69 +164,62 @@ class EnemyCylinder(PhysicsEntity):
         #defines distane between player and enemy
         dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
 
-        #if x distance < 8 tiles (128 pixels) and y distance < 1 tile (16 pixels), enemy moves towards player
-        if (abs(dis[0]) < 128) and (abs(dis[1]) < 10):
-
-            #if not aiming at player, can change direction
-            if not self.lock_in:
-                #makes enemy face at player direction
-                self.flip = True if dis[0] < 0 else False
-
-            #if distance < 5 tiles (128 pixels), stop moving and shoot
-            if(abs(dis[0]) < 80) and (abs(dis[1] < 10)):
-                if not self.in_recover:
-                    self.set_action('shooting')
-                    self.lock_in = True
-                    #shoots once every 1 seconds
-                    if self.shoot_delay >= 50:
-                        self.shoot_delay = 0
-                        self.in_recover = True
-                        self.set_action('recover')
-
-                        #if looking left and player at left
-                        if (self.flip):
-                            self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
-
-                        #if looking right and player at right
-                        if (not self.flip):
-                            self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0])
-
-                    else:
-                        self.shoot_delay += 1
-            else:
+        #if aiming at player, stops and shoots
+        if self.lock_in:
+            self.set_action('shooting')
+            self.shoot_delay += 1
+            #shoots once every 1 seconds
+            if self.shoot_delay >= 50:
                 self.shoot_delay = 0
-                #check if movement is possible
-                if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
-                    if self.collisions['right'] or self.collisions['left']:
-                        pass
-                    else:
-                        movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+                self.in_recover = True
+                self.lock_in = False
+                self.set_action('recover')
+
+                #if looking left and player at left
+                if (self.flip):
+                    self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
+                #if looking right and player at right
                 else:
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0])
+
+        #if x distance < 8 tiles (128 pixels) and y distance < 1 tile (16 pixels) and not locked in, enemy moves towards player 
+        elif (abs(dis[0] < 128)) and (abs(dis[1]) < 10):
+            self.flip = True if dis[0] < 0 else False
+            #check if movement is possible
+            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
+                if self.collisions['right'] or self.collisions['left']:
                     pass
-        else:
-            self.lock_in = False
-            self.shoot_delay = 0
-            if self.walking:
-                #check to see if there is a walkable tile in front
-                #checks 7 pixels to left or right dependent on movement, and 23 pixels below
-                if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
-                    #if collided wall
-                    if self.collisions['right'] or self.collisions['left']:
-                        self.flip = not self.flip
-                    else:   
-                        #defines move direction
-                        movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
                 else:
-                    self.flip = not self.flip
-                self.walking = max(0, self.walking - 1)          
+                    if not self.in_recover:
+                        movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+            #if player gets close, lock in and shoot
+            if (abs(dis[0]) < 80) and (abs(dis[1]) < 10) and not self.in_recover:
+                self.lock_in = True
+            
+        #if player not close and not locked in, wonders around
+        else:
+            if not self.lock_in and not self.in_recover:
+                if self.walking:
+                    #check to see if there is a walkable tile in front
+                    #checks 7 pixels to left or right dependent on movement, and 23 pixels below
+                    if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
+                        #if collided wall
+                        if self.collisions['right'] or self.collisions['left']:
+                            self.flip = not self.flip
+                        else:   
+                            #defines move direction
+                            if not self.in_recover:
+                                movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+                    else:
+                        self.flip = not self.flip
+                    self.walking = max(0, self.walking - 1)          
 
-            elif random() < 0.01:
-                #random chance to start walking
-                self.walking = randint(30, 120)
+                elif random() < 0.01:
+                    #random chance to start walking
+                    self.walking = randint(30, 120)  
 
-        super().update(tilemap, movement=movement)
 
-        #set correct animation based on movement
+        #set correct animation
         if self.in_recover:
             self.set_action('recover')
             if self.animation.done:
@@ -234,8 +227,14 @@ class EnemyCylinder(PhysicsEntity):
                 self.lock_in = False
         elif movement[0] != 0:
             self.set_action('run')  
-        elif not self.shoot_delay:
+        elif not self.shoot_delay and not self.lock_in:
             self.set_action('idle')
+
+        print(self.action)
+
+        super().update(tilemap, movement=movement)
+
+
 
 #flies around, if player passes below it, falls
 class EnemyCone(PhysicsEntity):
