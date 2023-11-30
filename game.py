@@ -22,6 +22,7 @@ class Game:
 
         #set title
         pygame.display.set_caption("Red Square Adventures")
+        pygame.display.set_icon(pygame.image.load('data/images/icon.png'))
         #creates screen obj reference named "screen"
         self.screen = pygame.display.set_mode((1280,960))
 
