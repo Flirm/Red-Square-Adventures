@@ -14,6 +14,7 @@ class PhysicsEntity:
         self.velocity = [0, 0]
         self.collisions = {'up' : False, 'down' : False, 'right' : False, 'left' : False}
         self.affected_gravity = True
+        self.scale = 1
 
         self.action = ''
         self.anim_offset = (-3, -3)
@@ -42,7 +43,7 @@ class PhysicsEntity:
 
         entity_rect = self.rect()
 
-        for rect in tilemap.physics_rects_around(self.pos):
+        for rect in tilemap.physics_rects_around(self.pos, self.scale):
             if entity_rect.colliderect(rect):
                 #if moving left or right and collide, handles accordingly
                 if frame_movement[0] > 0:
@@ -59,7 +60,7 @@ class PhysicsEntity:
 
         entity_rect = self.rect()
         
-        for rect in tilemap.physics_rects_around(self.pos):
+        for rect in tilemap.physics_rects_around(self.pos, self.scale):
             if entity_rect.colliderect(rect):
                 #if moving up or down and collide, handles accordingly
                 if frame_movement[1] > 0:
@@ -312,25 +313,10 @@ class EnemyBall(PhysicsEntity):
         super().__init__(game, 'ball', pos, size)
         self.walking = 0
         self.charging = False
-    
-    def update(self, tilemap, movement=(0,0)):
-        if self.walking:
-            #check to see if there is a walkable tile in front
-            #checks 7 pixels to left or right dependent on movement, and 23 pixels below
-            if tilemap.solid_check((self.rect().centerx + (-60 if self.flip else 60), self.pos[1] + 42)):
-                #if collided wall
-                if self.collisions['right'] or self.collisions['left']:
-                    self.flip = not self.flip
-                else:   
-                    #defines move direction
-                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
-            else:
-                self.flip = not self.flip
-            self.walking = max(0, self.walking - 1)
+        self.scale = 2
 
-        elif random() < 0.01:
-            #random chance to start walking
-            self.walking = randint(30, 120)
+
+    def update(self, tilemap, movement=(0,0)):
 
         super().update(tilemap, movement=movement)           
     #if charging
