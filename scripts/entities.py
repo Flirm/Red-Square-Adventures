@@ -42,7 +42,7 @@ class PhysicsEntity:
         self.pos[0] += frame_movement[0]
 
         entity_rect = self.rect()
-
+        
         for rect in tilemap.physics_rects_around(self.pos, self.scale):
             if entity_rect.colliderect(rect):
                 #if moving left or right and collide, handles accordingly
@@ -93,6 +93,8 @@ class PhysicsEntity:
 
     def render(self, surf, offset=(0, 0)):
         surf.blit(pygame.transform.flip(self.animation.img(), self.flip, False), (self.pos[0] - offset[0] + self.anim_offset[0], self.pos[1] - offset[1] + self.anim_offset[1]))
+        #uncomment code below to show hitboxes
+        #pygame.draw.rect(surf, (0,0,0), [self.pos[0]-offset[0],self.pos[1]-offset[1], self.size[0], self.size[1]])
 
 #enemy class template  
 class Enemy(PhysicsEntity):
@@ -312,11 +314,59 @@ class EnemyBall(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'ball', pos, size)
         self.walking = 0
-        self.charging = False
+        self.charging = 0
         self.scale = 2
+        self.recover_time = 0
 
 
     def update(self, tilemap, movement=(0,0)):
+        #defines distance from player
+        dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
+
+        if self.charging:
+            #if already prepared the charge, goes foreward non stop
+            if self.charging == 1:
+                #define movement
+                movement = (movement[0] - 1.5 if self.flip else 1.5, movement[1])
+                #only stops if collided with wall
+                if self.collisions['right'] or self.collisions['left']:
+                    #stops charge and begin recover
+                    self.charging = 0
+                    self.recover_time = 120
+            else:
+                self.charging = max(1, self.charging - 1)
+            pass
+        else:
+            
+            if not self.recover_time:
+                #wonders around
+                if self.walking:
+                    #check to see if there is a walkable tile in front
+                    #checks 7 pixels to left or right dependent on movement, and 23 pixels below
+                    if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 39)):
+                        #if collided wall, flips
+                        if self.collisions['right'] or self.collisions['left']:
+                            self.flip = not self.flip
+                        else:   
+                            #defines move direction
+                            movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
+                    else:
+                        self.flip = not self.flip
+                    self.walking = max(0, self.walking - 1)          
+
+                elif random() < 0.01:
+                    #random chance to start walking
+                    self.walking = randint(30, 120)  
+            else:
+                #updates recovery time
+                self.recover_time = max(0, self.recover_time - 1)
+
+            #if X distance from player < 4 tiles and Y dis < 1 tile and enemy facing player, gets into changing state
+            if (abs(dis[0]) < 64) and (abs(dis[1]) < 16) and ((self.flip and dis[0] < 0) or (not self.flip and dis[0] > 0)):
+                #charge prep time == 2 seconds
+                self.charging = 120
+
+
 
         super().update(tilemap, movement=movement)           
     #if charging

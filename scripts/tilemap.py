@@ -55,7 +55,7 @@ class Tilemap:
         #gets the scale of the sprite so it can get the correct neighbours
         if scale != 1:
             if scale == 2:
-                n_offsets = [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, -1), (0, 2), (1, -1), (1, 2), (2, -1), (2, 0), (2, 1), (2, 2)]
+                n_offsets = [(-1, -1), (-1, 0), (-1, 1), (-1, 2), (0, -1), (0, 2), (1, -1), (1, 2), (2, -1), (2, 0), (2, 1), (2, 2), (0, 0), (0, 1), (1, 0), (1, 1)]
         else:
             n_offsets = NEIGHBOR_OFFSETS
 

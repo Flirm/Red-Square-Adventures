@@ -105,7 +105,7 @@ class Game:
             elif spawner['variant'] == 2:
                 self.enemies.append(EnemyCone(self, spawner['pos'], (8,10)))
             else:
-                self.enemies.append(EnemyBall(self, spawner['pos'], (33,29)))
+                self.enemies.append(EnemyBall(self, spawner['pos'], (28,29)))
             
         #init projectiles list
         self.projectiles = []
