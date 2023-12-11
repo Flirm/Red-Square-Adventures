@@ -16,7 +16,7 @@ AUTOTILE_MAP = {
 
 #list defines tiles that are neighbors with entity position
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
-PHYSICS_TILES = {'grass', 'stone'}
+PHYSICS_TILES = {'grass', 'stone', 'border'}
 AUTOTILE_TYPES = {'grass', 'stone'}
 
 #tilemap class handles placing and rendering scenario
@@ -145,7 +145,8 @@ class Tilemap:
                         #if player distance from it is close and tile type is Y, stop scrolling camera in y axis
                         if abs(tile['pos'][1] - player_pos[1]) < (surf.get_height()/2) // self.tile_size + 3 and tile['variant'] == 1:
                             on_border[1] = True
-                    surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
+                    else:
+                        surf.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
         
         return on_border
 
