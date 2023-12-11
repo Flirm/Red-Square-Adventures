@@ -271,7 +271,8 @@ class Game:
             for enemy in self.enemies.copy():
                 enemy.update(self.tilemap, (0, 0))
                 enemy.render(self.display, offset=render_scroll)
-                pygame.draw.rect(self.display, (0,0,0), [self.player.pos[0]-render_scroll[0] + 8,self.player.pos[1]-render_scroll[1], 26, self.player.size[1]])
+                #uncomment to show attack hitboxm this hitbox is only showing to right direction
+                #pygame.draw.rect(self.display, (0,0,0), [self.player.pos[0]-render_scroll[0] + 8,self.player.pos[1]-render_scroll[1], 26, self.player.size[1]])
                 if self.attack_hitbox != None:
                     if self.attack_hitbox.colliderect(enemy.rect()):
                         self.enemies.remove(enemy)
