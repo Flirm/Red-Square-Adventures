@@ -391,6 +391,7 @@ class Player(PhysicsEntity):
         self.wall_slide = False
         self.wall_jump = False
         self.dashing = 0
+        self.attacking = False
 
     def update(self, tilemap, movement=(0 ,0)):
         super().update(tilemap, movement=movement)
@@ -415,6 +416,11 @@ class Player(PhysicsEntity):
         if not self.wall_slide:
             if abs(self.dashing) > 40:
                 self.set_action('dash')
+            elif self.attacking:
+                if not self.animation.done:
+                    self.set_action('attack')
+                else:
+                    self.attacking = False
             #if on air for a 'long' time sets jump anim
             elif self.air_time > 4:
                 self.set_action('jump')
@@ -488,3 +494,15 @@ class Player(PhysicsEntity):
                 self.dashing = -60
             else:
                 self.dashing = 60
+
+    def attack(self):
+        if not self.wall_slide and abs(self.dashing) < 50:
+            self.set_action('attack')
+            self.attacking = True
+            if self.flip:
+                atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1], 26, self.size[1])
+            else:
+                atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1], 26, self.size[1])
+            return atk_rect
+        else:
+            return None

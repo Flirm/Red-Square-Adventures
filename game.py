@@ -57,6 +57,7 @@ class Game:
             'player/slide' : Animation(load_images('entities/player/slide')),
             'player/wall_slide' : Animation(load_images('entities/player/wall_slide')),
             'player/dash' : Animation(load_images('entities/player/dash'), img_dur=6, loop=False),
+            'player/attack' : Animation(load_images('entities/player/attack'), img_dur=3, loop=False),
             'particle/leaf' : Animation(load_images('particles/leaf'), img_dur = 20, loop = False),
             'particle/particle' : Animation(load_images('particles/particle'), img_dur = 6, loop = False),
             'smoke/jump' : Animation(load_images('smokes/jump'), loop=False, img_dur=4),
@@ -75,6 +76,7 @@ class Game:
 
         #init player object
         self.player = Player(self, (50,50), (8,15))
+        self.attack_hitbox = pygame.Rect(0,0,0,0)
 
         #--------------------------------------------------------------------------#
 
@@ -269,7 +271,11 @@ class Game:
             for enemy in self.enemies.copy():
                 enemy.update(self.tilemap, (0, 0))
                 enemy.render(self.display, offset=render_scroll)
-
+                pygame.draw.rect(self.display, (0,0,0), [self.player.pos[0]-render_scroll[0] + 8,self.player.pos[1]-render_scroll[1], 26, self.player.size[1]])
+                if self.attack_hitbox != None:
+                    if self.attack_hitbox.colliderect(enemy.rect()):
+                        self.enemies.remove(enemy)
+            
             #updates player position
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=render_scroll)
@@ -326,6 +332,8 @@ class Game:
                         self.player.jump()
                     if event.key == pygame.K_c:
                         self.player.dash()
+                    if event.key == pygame.K_x:
+                        self.attack_hitbox = self.player.attack()
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = False
