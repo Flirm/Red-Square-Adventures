@@ -496,7 +496,7 @@ class Player(PhysicsEntity):
                 self.dashing = 60
 
     def attack(self):
-        if not self.wall_slide and abs(self.dashing) < 50:
+        if not self.wall_slide and abs(self.dashing) < 50 and not self.attacking:
             self.set_action('attack')
             self.attacking = True
             if self.flip:
