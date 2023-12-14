@@ -395,7 +395,7 @@ class Player(PhysicsEntity):
         self.can_dash = False
         self.dashing = 0
         self.attacking = False
-        self.reflect_bullet = True
+        self.reflect_bullet = False
         '''
         unlockables (change to true if you need to use/test):
         self.reflect_bullet
