@@ -447,7 +447,7 @@ class Game:
                 elif self.level == 20:
                     self.transition('reflect_bullet')
                     self.player.reflect_bullet = True
-                elif self.level == 1:
+                elif self.level == 25:
                     self.level = 0
                     self.player.reset()
                     self.final_messenge()
