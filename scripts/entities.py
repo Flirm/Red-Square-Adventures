@@ -392,8 +392,11 @@ class Player(PhysicsEntity):
         self.double_jump = False
         self.wall_slide = False
         self.wall_jump = False
+        self.can_dash = False
         self.dashing = 0
         self.attacking = False
+        self.reflect_bullet = True
+
 
     def update(self, tilemap, movement=(0 ,0)):
         super().update(tilemap, movement=movement)
@@ -492,7 +495,7 @@ class Player(PhysicsEntity):
 
     def dash(self):
         #only dashes if not in dash
-        if not self.dashing:
+        if not self.dashing and self.can_dash:
             play_sound(self.game.sounds['dash'], 1)
             self.set_action('dash')
             #defines if dash goes left or right
@@ -507,9 +510,9 @@ class Player(PhysicsEntity):
             self.set_action('attack')
             self.attacking = True
             if self.flip:
-                atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1], 26, self.size[1])
+                self.atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1], 26, self.size[1])
             else:
-                atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1], 26, self.size[1])
-            return atk_rect
+                self.atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1], 26, self.size[1])
+            return self.atk_rect
         else:
             return None

@@ -85,7 +85,8 @@ class Game:
 
         #init tilemap
         self.tilemap = Tilemap(self, tile_size=16)
-        self.load_level(0)
+        self.level = 0
+        self.load_level(self.level)
 
         
 
@@ -313,6 +314,9 @@ class Game:
                 #if projectile collides with solid tile, gets deleted
                 if self.tilemap.solid_check(projectile[0]) or projectile[2] > 360:
                     self.projectiles.remove(projectile)
+                elif self.attack_hitbox != None and self.player.reflect_bullet:
+                    if self.attack_hitbox.collidepoint(projectile[0]):
+                        projectile[1] = -projectile[1]
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile[0]):
@@ -329,6 +333,10 @@ class Game:
 
                 if kill:
                     self.particles.remove(particle)
+
+
+            #after making all hit check in frame, resets hitbox to none
+            self.attack_hitbox = None
 
             #loop iterates through input events
             for event in pygame.event.get():
@@ -374,5 +382,8 @@ class Game:
             pygame.display.update()
             #forces game to be in 60 fps
             self.clock.tick(60)
+
+            if len(self.enemies) == 0:
+                pass
 
 Game().menus()
