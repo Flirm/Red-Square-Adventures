@@ -131,6 +131,9 @@ class Game:
         self.scroll = [0, 0]
         self.in_border = [False, False]
 
+        self.dead = 0
+
+
 
     def menus(self):
 
@@ -299,13 +302,26 @@ class Game:
                 if self.attack_hitbox != None:
                     if self.attack_hitbox.colliderect(enemy.rect()):
                         play_sound(self.sounds['sword_hit'] , 2)
-                        enemy.life -= 10
+                        enemy.life -= 1
                 if enemy.life == 0:
                     self.enemies.remove(enemy)
             
             #updates player position
-            self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display, offset=render_scroll)
+            if not self.dead:
+                self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
+                self.player.render(self.display, offset=render_scroll)                
+
+            #if player falls from map, dies
+            if self.player.pos[1] > 1500:
+                self.dead += 1
+            #if player lost all life, dies
+            if self.player.life <= 0:
+                self.dead += 1
+            #little delay between dead and reloading level
+            if self.dead:
+                if self.dead > 40:
+                    self.player.life = 5
+                    self.load_level(self.level)
 
             #projectile list has the following format for each element
             # [[x, y], direction, timer, owner]
@@ -325,7 +341,7 @@ class Game:
                     for enemy in self.enemies.copy():
                         if enemy.rect().collidepoint(projectile[0]):
                             play_sound(self.sounds['sword_hit'] , 2)
-                            enemy.life -= 10
+                            enemy.life -= 1
                             self.projectiles.remove(projectile)
                             break
                 #if player has reflecting hability unlocked, can reflect bullets with attack
@@ -337,7 +353,7 @@ class Game:
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile[0]):
-                        self.player.life -= 10
+                        self.player.life -= 1
                         self.projectiles.remove(projectile)
                 
 
@@ -402,6 +418,7 @@ class Game:
             #forces game to be in 60 fps
             self.clock.tick(60)
 
+            #changes level when all enemies are dead
             if len(self.enemies) == 0:
                 self.level += 1
 

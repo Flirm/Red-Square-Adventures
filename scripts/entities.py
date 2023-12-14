@@ -102,7 +102,7 @@ class PhysicsEntity:
 class EnemyCylinder(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'cylinder', pos, size)
-        self.life = 30
+        self.life = 3
         self.shoot_delay = 0
         self.walking = 0
         self.in_recover = False
@@ -187,7 +187,7 @@ class EnemyCylinder(PhysicsEntity):
 class EnemyCone(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'cone', pos, size)
-        self.life = 20
+        self.life = 2
         self.walking = 0
         self.affected_gravity = False
         self.recovering = False
@@ -260,7 +260,7 @@ class EnemyCone(PhysicsEntity):
 class EnemyBall(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'ball', pos, size)
-        self.life = 50
+        self.life = 5
         self.walking = 0
         self.charging = 0
         self.scale = 2
@@ -333,12 +333,12 @@ class EnemyBall(PhysicsEntity):
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'player', pos, size)
-        self.life = 100
+        self.life = 5
         self.air_time = 0
         self.jumps = 1
         self.double_jump = False
         self.wall_slide = False
-        self.wall_jump = False
+        self.wall_jump = True
         self.can_dash = False
         self.dashing = 0
         self.attacking = False
