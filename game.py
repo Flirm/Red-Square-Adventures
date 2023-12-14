@@ -37,6 +37,7 @@ class Game:
 
         #load game images into dict
         self.assets = {
+            'life' : pygame.image.load('data/images/life.png'),
             'decor' : load_images('tiles/decor'),
             'grass' : load_images('tiles/grass'),
             'large_decor' : load_images('tiles/large_decor'),
@@ -410,9 +411,14 @@ class Game:
                 self.jump_smoke.update()
                 self.display.blit(self.jump_smoke.img(), (self.jump_pos[0] - self.jump_smoke.img().get_width()/2 - self.scroll[0], self.jump_pos[1] - self.scroll[1]))
 
+            for i in range(self.player.life):
+                self.display.blit(self.assets['life'], (5 + (i*20), 5))
             #blits display in screen
             #pygame.transform.scale scales up display to fit in screen
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+
+            
+
             #update screen
             pygame.display.update()
             #forces game to be in 60 fps
