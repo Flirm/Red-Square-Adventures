@@ -25,6 +25,9 @@ def load_images(path):
     
     return images
 
+def load_sound(path):
+    return pygame.mixer.Sound(BASE_SFX_PATH + path)
+
 
 
 class Animation:

@@ -6,7 +6,7 @@ from math import sin
 import pygame
 
 from scripts.tilemap import Tilemap
-from scripts.utils import load_image, load_images, Animation
+from scripts.utils import load_image, load_images, Animation, load_sound
 from scripts.entities import PhysicsEntity, Player, Enemy, EnemyCylinder, EnemyCone, EnemyBall
 from scripts.clouds import Clouds
 from scripts.particle import Particle
@@ -119,6 +119,16 @@ class Game:
         self.scroll = [0, 0]
         self.in_border = [False, False]
 
+        #init sound list
+        self.sounds= {
+            'button_switch' : load_sound('button_switch.wav'),
+            'button_click' : load_sound('button_click.wav'),
+            'jump' : load_sound('jump.wav'),
+            'shoot' : load_sound('shoot.wav'),
+            'sword_wiff' : load_sound('slash_wiff.mp3'),
+            'sword_hit' : load_sound('slash_hit.mp3'),
+            'dash' : load_sound('dash.mp3')
+        }
 
     def menus(self):
 
@@ -147,10 +157,6 @@ class Game:
         new_color_button.replace((250, 116, 27), (250, 143, 65))
         del new_color_button
 
-        self.sounds= {
-            'button_switch' : pygame.mixer.Sound('data/sfx/button_switch.wav'),
-            'button_click' : pygame.mixer.Sound('data/sfx/button_click.wav')
-        }
 
         pygame.mixer.set_num_channels(2)
 
