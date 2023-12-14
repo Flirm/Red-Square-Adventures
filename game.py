@@ -411,14 +411,13 @@ class Game:
                 self.jump_smoke.update()
                 self.display.blit(self.jump_smoke.img(), (self.jump_pos[0] - self.jump_smoke.img().get_width()/2 - self.scroll[0], self.jump_pos[1] - self.scroll[1]))
 
+            #render player life on screen
             for i in range(self.player.life):
                 self.display.blit(self.assets['life'], (5 + (i*20), 5))
+
             #blits display in screen
             #pygame.transform.scale scales up display to fit in screen
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
-
-            
-
             #update screen
             pygame.display.update()
             #forces game to be in 60 fps
@@ -427,16 +426,61 @@ class Game:
             #changes level when all enemies are dead
             if len(self.enemies) == 0:
                 self.level += 1
+                self.player.life = 5
 
-                if self.level == 5:
+                if self.level == 1:
+                    self.transition('dash')
                     self.player.can_dash = True
                 elif self.level == 10:
+                    self.transition('wall_jump')
                     self.player.wall_jump = True
                 elif self.level == 15:
+                    self.transition('double_jump')
                     self.player.double_jump = True
                 elif self.level == 20:
+                    self.transition('reflect_bullet')
                     self.player.reflect_bullet = True
 
                 self.load_level(self.level)
+
+    def transition(self, set):
+        
+        self.display.blit(self.assets['background'], (0,0))
+
+        self.timer = 600
+        
+        self.texts = {
+            'dash' : pygame.image.load('data/images/unlocks/dash_unlock.png'),
+            'wall_jump' : pygame.image.load('data/images/unlocks/wall_jump_unlock.png'),
+            'double_jump' : pygame.image.load('data/images/unlocks/double_jump_unlock.png'),
+            'reflect_bullet' : pygame.image.load('data/images/unlocks/bullet_parry_unlock.png')
+        }
+
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/sfx/power_up.mp3'))
+
+        while True:
+            self.display.blit(self.texts[set], (self.display.get_width()/2 - self.texts[set].get_width()/2, self.display.get_height()/2 - self.texts[set].get_height()/2))
+
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_z:
+                        return
+            
+            if not self.timer:
+                return
+
+            self.timer = max(self.timer - 1, 0)
+
+
+            #scale display to screen size and blit
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+            #update screen
+            pygame.display.update()
+            #forces game to be in 60 fps
+            self.clock.tick(60)
 
 Game().menus()
