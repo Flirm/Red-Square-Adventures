@@ -338,7 +338,7 @@ class Player(PhysicsEntity):
         self.jumps = 1
         self.double_jump = False
         self.wall_slide = False
-        self.wall_jump = False
+        self.wall_jump = True
         self.can_dash = False
         self.dashing = 0
         self.attacking = False

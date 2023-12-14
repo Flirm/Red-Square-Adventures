@@ -327,6 +327,7 @@ class Game:
                             play_sound(self.sounds['sword_hit'] , 2)
                             enemy.life -= 10
                             self.projectiles.remove(projectile)
+                            break
                 #if player has reflecting hability unlocked, can reflect bullets with attack
                 elif self.attack_hitbox != None and self.player.reflect_bullet:
                     if self.attack_hitbox.collidepoint(projectile[0]):
@@ -403,6 +404,6 @@ class Game:
 
             if len(self.enemies) == 0:
                 self.level += 1
-                pass
+                self.load_level(self.level)
 
 Game().menus()
