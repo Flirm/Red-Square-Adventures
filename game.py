@@ -405,14 +405,20 @@ class Game:
             if len(self.enemies) == 0:
                 self.level += 1
 
-                if self.level == 5:
+                if self.level >= 20:
                     self.player.can_dash = True
-                elif self.level == 10:
                     self.player.wall_jump = True
-                elif self.level == 15:
                     self.player.double_jump = True
-                elif self.level == 20:
                     self.player.reflect_bullet = True
+                elif self.level >= 15:
+                    self.player.can_dash = True
+                    self.player.wall_jump = True
+                    self.player.double_jump = True
+                elif self.level >= 10:
+                    self.player.can_dash = True
+                    self.player.wall_jump = True
+                elif self.level >= 5:
+                    self.player.can_dash = True
 
                 self.load_level(self.level)
 
