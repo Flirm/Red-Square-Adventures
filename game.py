@@ -65,6 +65,18 @@ class Game:
             'projectile' : load_image('projectile.png')
         }
 
+        #init sound list
+        self.sounds= {
+            'button_switch' : load_sound('button_switch.wav'),
+            'button_click' : load_sound('button_click.wav'),
+            'jump' : load_sound('jump.wav'),
+            'shoot' : load_sound('shoot.wav'),
+            'sword_wiff' : load_sound('slash_wiff.mp3', 0.5),
+            'sword_hit' : load_sound('slash_hit.wav', 0.5),
+            'dash' : load_sound('dash.mp3'),
+            'sword_reflect' : load_sound('reflect.mp3')
+        }
+        
         #init clouds
         self.clouds = Clouds(self.assets['clouds'], count=16)
 
@@ -86,7 +98,6 @@ class Game:
         #init tilemap
         self.tilemap = Tilemap(self, tile_size=16)
         self.level = 0
-        self.load_level(self.level)
 
         
 
@@ -120,17 +131,6 @@ class Game:
         self.scroll = [0, 0]
         self.in_border = [False, False]
 
-        #init sound list
-        self.sounds= {
-            'button_switch' : load_sound('button_switch.wav'),
-            'button_click' : load_sound('button_click.wav'),
-            'jump' : load_sound('jump.wav'),
-            'shoot' : load_sound('shoot.wav'),
-            'sword_wiff' : load_sound('slash_wiff.mp3', 0.5),
-            'sword_hit' : load_sound('slash_hit.wav', 0.5),
-            'dash' : load_sound('dash.mp3'),
-            'sword_reflect' : load_sound('reflect.mp3')
-        }
 
     def menus(self):
 
@@ -258,6 +258,8 @@ class Game:
         5 : background music
         6 : sword reflect
         '''
+
+        self.load_level(self.level)
 
         #game loop
         while True:
