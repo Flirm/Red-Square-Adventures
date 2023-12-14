@@ -478,3 +478,16 @@ class Player(PhysicsEntity):
             return self.atk_rect
         else:
             return None
+        
+    def reset(self):
+        self.life = 5
+        self.air_time = 0
+        self.jumps = 1
+        self.double_jump = False
+        self.wall_slide = False
+        self.wall_jump = True
+        self.can_dash = False
+        self.dashing = 0
+        self.attacking = False
+        self.reflect_bullet = False
+        self.recover = 0        

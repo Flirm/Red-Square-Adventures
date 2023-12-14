@@ -447,6 +447,11 @@ class Game:
                 elif self.level == 20:
                     self.transition('reflect_bullet')
                     self.player.reflect_bullet = True
+                elif self.level == 1:
+                    self.level = 0
+                    self.player.reset()
+                    self.final_messenge()
+                    return
 
                 self.load_level(self.level)
 
@@ -489,5 +494,31 @@ class Game:
             pygame.display.update()
             #forces game to be in 60 fps
             self.clock.tick(60)
+
+    def final_messenge(self):
+
+        self.display.blit(self.assets['background'], (0,0))
+
+        message = pygame.image.load('data/images/final_message.png')
+
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound('data/sfx/win.mp3'))
+
+        while True:
+            self.display.blit(message, (self.display.get_width()/2 - message.get_width()/2, self.display.get_height()/2 - message.get_height()/2))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_z or event.key == pygame.K_RETURN:
+                        return
+
+            #scale display to screen size and blit
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
+            #update screen
+            pygame.display.update()
+            #forces game to be in 60 fps
+            self.clock.tick(60)        
 
 Game().menus()
