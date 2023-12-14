@@ -97,68 +97,12 @@ class PhysicsEntity:
         #uncomment code below to show hitboxes
         #pygame.draw.rect(surf, (0,0,0), [self.pos[0]-offset[0],self.pos[1]-offset[1], self.size[0], self.size[1]])
 
-#enemy class template  
-class Enemy(PhysicsEntity):
-    def __init__(self, game, pos, size):
-        super().__init__(game, 'enemy', pos, size)
-
-        self.walking = 0
-
-    def update(self, tilemap, movement=(0,0)):
-        if self.walking:
-            #check to see if there is a walkable tile in front
-            #checks 7 pixels to left or right dependent on movement, and 23 pixels below
-            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.pos[1] + 23)):
-                #if collided wall
-                if self.collisions['right'] or self.collisions['left']:
-                    self.flip = not self.flip
-                else:   
-                    #defines move direction
-                    movement = (movement[0] - 0.5 if self.flip else 0.5, movement[1])
-            else:
-                self.flip = not self.flip
-            self.walking = max(0, self.walking - 1)
-
-            #shoots a projectile once it stops walking (1 shoot/walk cicle)
-            if not self.walking:
-                #defines distane between player and enemy
-                dis = (self.game.player.pos[0] - self.pos[0], self.game.player.pos[1] - self.pos[1])
-                #if y distance < 16
-                if (abs(dis[1]) < 16):
-                    #if looking left and player at left
-                    if (self.flip and dis[0] < 0):
-                        self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
-                    #if looking right and player at right
-                    if (not self.flip and dis[0] > 0):
-                        self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0])
-
-        elif random() < 0.01:
-            #random chance to start walking
-            self.walking = randint(30, 120)
-
-        super().update(tilemap, movement=movement)
-
-        #set correct animation based on movement
-        if movement[0] != 0:
-            self.set_action('run')
-        else:
-            self.set_action('idle')
-
-    def render(self, surf, offset=(0, 0)):
-        #render enemy
-        super().render(surf, offset=offset)
-
-        #render gun
-        if self.flip:
-            surf.blit(pygame.transform.flip(self.game.assets['gun'], True, False), (self.rect().centerx - 4 - self.game.assets['gun'].get_width() - offset[0], self.rect().centery - offset[1])) 
-        else:
-            surf.blit(self.game.assets['gun'], (self.rect().centerx + 4 - offset[0], self.rect().centery - offset[1]))
-
 
 #walks and shoots at player direction
 class EnemyCylinder(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'cylinder', pos, size)
+        self.life = 30
         self.shoot_delay = 0
         self.walking = 0
         self.in_recover = False
@@ -243,6 +187,7 @@ class EnemyCylinder(PhysicsEntity):
 class EnemyCone(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'cone', pos, size)
+        self.life = 20
         self.walking = 0
         self.affected_gravity = False
         self.recovering = False
@@ -315,6 +260,7 @@ class EnemyCone(PhysicsEntity):
 class EnemyBall(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'ball', pos, size)
+        self.life = 50
         self.walking = 0
         self.charging = 0
         self.scale = 2
@@ -387,6 +333,7 @@ class EnemyBall(PhysicsEntity):
 class Player(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'player', pos, size)
+        self.life = 100
         self.air_time = 0
         self.jumps = 1
         self.double_jump = False

@@ -7,7 +7,7 @@ import pygame
 
 from scripts.tilemap import Tilemap
 from scripts.utils import load_image, load_images, Animation, load_sound, play_sound
-from scripts.entities import PhysicsEntity, Player, Enemy, EnemyCylinder, EnemyCone, EnemyBall
+from scripts.entities import PhysicsEntity, Player, EnemyCylinder, EnemyCone, EnemyBall
 from scripts.clouds import Clouds
 from scripts.particle import Particle
 
@@ -57,7 +57,7 @@ class Game:
             'player/slide' : Animation(load_images('entities/player/slide')),
             'player/wall_slide' : Animation(load_images('entities/player/wall_slide')),
             'player/dash' : Animation(load_images('entities/player/dash'), img_dur=6, loop=False),
-            'player/attack' : Animation(load_images('entities/player/attack'), img_dur=3, loop=False),
+            'player/attack' : Animation(load_images('entities/player/attack'), img_dur=4, loop=False),
             'particle/leaf' : Animation(load_images('particles/leaf'), img_dur = 20, loop = False),
             'particle/particle' : Animation(load_images('particles/particle'), img_dur = 6, loop = False),
             'smoke/jump' : Animation(load_images('smokes/jump'), loop=False, img_dur=4),
@@ -76,7 +76,7 @@ class Game:
             'dash' : load_sound('dash.mp3'),
             'sword_reflect' : load_sound('reflect.mp3')
         }
-        
+
         #init clouds
         self.clouds = Clouds(self.assets['clouds'], count=16)
 
@@ -299,7 +299,9 @@ class Game:
                 if self.attack_hitbox != None:
                     if self.attack_hitbox.colliderect(enemy.rect()):
                         play_sound(self.sounds['sword_hit'] , 2)
-                        self.enemies.remove(enemy)
+                        enemy.life -= 10
+                if enemy.life == 0:
+                    self.enemies.remove(enemy)
             
             #updates player position
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
@@ -323,7 +325,7 @@ class Game:
                     for enemy in self.enemies.copy():
                         if enemy.rect().collidepoint(projectile[0]):
                             play_sound(self.sounds['sword_hit'] , 2)
-                            self.enemies.remove(enemy)
+                            enemy.life -= 10
                             self.projectiles.remove(projectile)
                 #if player has reflecting hability unlocked, can reflect bullets with attack
                 elif self.attack_hitbox != None and self.player.reflect_bullet:
@@ -334,6 +336,7 @@ class Game:
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile[0]):
+                        self.player.life -= 10
                         self.projectiles.remove(projectile)
                 
 
@@ -350,7 +353,7 @@ class Game:
                     self.particles.remove(particle)
 
 
-            #after making all hit check in frame, resets hitbox to none
+            #after making all hit checks in frame, resets hitbox to none
             self.attack_hitbox = None
 
             #loop iterates through input events
@@ -399,6 +402,7 @@ class Game:
             self.clock.tick(60)
 
             if len(self.enemies) == 0:
+                self.level += 1
                 pass
 
 Game().menus()
