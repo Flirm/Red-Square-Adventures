@@ -4,6 +4,7 @@ from random import random, randint
 import pygame
 
 from scripts.particle import Particle
+from scripts.utils import play_sound
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size):
@@ -177,6 +178,7 @@ class EnemyCylinder(PhysicsEntity):
                 self.in_recover = True
                 self.lock_in = False
                 self.set_action('recover')
+                play_sound(self.game.sounds['shoot'], 3)
 
                 #if looking left and player at left
                 if (self.flip):
@@ -464,12 +466,14 @@ class Player(PhysicsEntity):
                 self.velocity[1] = -2.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
+                play_sound(self.game.sounds['jump'], 0)
                 return True
             elif not self.flip and self.last_movement[0] > 0:
                 self.velocity[0] = -2.0
                 self.velocity[1] = -2.5
                 self.air_time = 5
                 self.jumps = max(0, self.jumps - 1)
+                play_sound(self.game.sounds['jump'], 0)
                 return True
         #check if there are jumps left
         elif self.jumps:
@@ -477,6 +481,7 @@ class Player(PhysicsEntity):
             self.velocity[1] = -3
             #puts air time in 5 to force jumping anim to start playing
             self.air_time = 5
+            play_sound(self.game.sounds['jump'], 0)
             return True
     
     def restore_jumps(self):
@@ -488,6 +493,7 @@ class Player(PhysicsEntity):
     def dash(self):
         #only dashes if not in dash
         if not self.dashing:
+            play_sound(self.game.sounds['dash'], 1)
             self.set_action('dash')
             #defines if dash goes left or right
             if self.flip:
@@ -497,6 +503,7 @@ class Player(PhysicsEntity):
 
     def attack(self):
         if not self.wall_slide and abs(self.dashing) < 50 and not self.attacking:
+            play_sound(self.game.sounds['sword_wiff'], 2)
             self.set_action('attack')
             self.attacking = True
             if self.flip:

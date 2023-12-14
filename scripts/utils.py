@@ -25,8 +25,13 @@ def load_images(path):
     
     return images
 
-def load_sound(path):
-    return pygame.mixer.Sound(BASE_SFX_PATH + path)
+def load_sound(path, volume=1):
+    sound = pygame.mixer.Sound(BASE_SFX_PATH + path)
+    sound.set_volume(volume)
+    return sound
+
+def play_sound(sound_file, chanel_num):
+    pygame.mixer.Channel(chanel_num).play(sound_file)
 
 
 

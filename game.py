@@ -6,7 +6,7 @@ from math import sin
 import pygame
 
 from scripts.tilemap import Tilemap
-from scripts.utils import load_image, load_images, Animation, load_sound
+from scripts.utils import load_image, load_images, Animation, load_sound, play_sound
 from scripts.entities import PhysicsEntity, Player, Enemy, EnemyCylinder, EnemyCone, EnemyBall
 from scripts.clouds import Clouds
 from scripts.particle import Particle
@@ -125,8 +125,8 @@ class Game:
             'button_click' : load_sound('button_click.wav'),
             'jump' : load_sound('jump.wav'),
             'shoot' : load_sound('shoot.wav'),
-            'sword_wiff' : load_sound('slash_wiff.mp3'),
-            'sword_hit' : load_sound('slash_hit.mp3'),
+            'sword_wiff' : load_sound('slash_wiff.mp3', 0.5),
+            'sword_hit' : load_sound('slash_hit.wav', 0.5),
             'dash' : load_sound('dash.mp3')
         }
 
@@ -179,7 +179,7 @@ class Game:
                         #if k up or down, revert previous button color, changes button selected, updates color on new button
                         if event.key == pygame.K_UP:
                             
-                            pygame.mixer.Channel(0).play(self.sounds['button_switch'])
+                            play_sound(self.sounds['button_switch'], 0)
 
                             new_color_button = pygame.PixelArray(self.menu_assets[self.button_types[self.current_button]])
                             new_color_button.replace((250, 143, 65), (250, 116, 27))
@@ -193,7 +193,7 @@ class Game:
 
                         if event.key == pygame.K_DOWN:
 
-                            pygame.mixer.Channel(0).play(self.sounds['button_switch'])
+                            play_sound(self.sounds['button_switch'], 0)
 
                             new_color_button = pygame.PixelArray(self.menu_assets[self.button_types[self.current_button]])
                             new_color_button.replace((250, 143, 65), (250, 116, 27))
@@ -207,7 +207,7 @@ class Game:
 
                         if event.key == pygame.K_z or event.key == pygame.K_RETURN:
 
-                            pygame.mixer.Channel(1).play(self.sounds['button_click'])
+                            play_sound(self.sounds['button_click'], 1)
 
                             if self.button_types[self.current_button] == 'play':
                                 self.run()
@@ -244,6 +244,17 @@ class Game:
         
 
     def run(self):
+
+        pygame.mixer.set_num_channels(5)
+        '''
+        Chanels description:
+        0 : jump
+        1 : dash
+        2 : sword sounds
+        3 : shoot
+        4 : background music
+        '''
+
         #game loop
         while True:
 
@@ -281,6 +292,7 @@ class Game:
                 #pygame.draw.rect(self.display, (0,0,0), [self.player.pos[0]-render_scroll[0] + 8,self.player.pos[1]-render_scroll[1], 26, self.player.size[1]])
                 if self.attack_hitbox != None:
                     if self.attack_hitbox.colliderect(enemy.rect()):
+                        play_sound(self.sounds['sword_hit'] , 2)
                         self.enemies.remove(enemy)
             
             #updates player position
