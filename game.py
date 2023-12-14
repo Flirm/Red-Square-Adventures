@@ -306,7 +306,12 @@ class Game:
                         enemy.life -= 1
                 if enemy.life == 0:
                     self.enemies.remove(enemy)
-            
+                if self.player.rect().colliderect(enemy.rect()) and not self.player.recover:
+                    play_sound(self.sounds['sword_hit'], 2)
+                    self.player.life -= 1
+                    self.player.recover = 80
+
+
             #updates player position
             if not self.dead:
                 self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
@@ -353,8 +358,10 @@ class Game:
                         projectile[3] = 'player'
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:
-                    if self.player.rect().collidepoint(projectile[0]):
+                    if self.player.rect().collidepoint(projectile[0]) and not self.player.recover:
+                        play_sound(self.sounds['sword_hit'], 2)
                         self.player.life -= 1
+                        self.player.recover = 80
                         self.projectiles.remove(projectile)
                 
 
@@ -428,7 +435,7 @@ class Game:
                 self.level += 1
                 self.player.life = 5
 
-                if self.level == 1:
+                if self.level == 5:
                     self.transition('dash')
                     self.player.can_dash = True
                 elif self.level == 10:

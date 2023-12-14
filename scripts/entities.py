@@ -343,6 +343,7 @@ class Player(PhysicsEntity):
         self.dashing = 0
         self.attacking = False
         self.reflect_bullet = False
+        self.recover = 0
         '''
         unlockables (change to true if you need to use/test):
         self.reflect_bullet
@@ -354,6 +355,9 @@ class Player(PhysicsEntity):
 
     def update(self, tilemap, movement=(0 ,0)):
         super().update(tilemap, movement=movement)
+
+        if self.recover:
+            self.recover = max(self.recover - 1, 0)
 
         self.air_time += 1
         #if on ground, resets air time and jump delay
@@ -412,7 +416,11 @@ class Player(PhysicsEntity):
 
     def render(self, surf, offset=(0, 0)):
         #if not in dash renders normally
-        super().render(surf, offset=offset)
+        if not self.recover:
+            super().render(surf, offset=offset)
+        else:
+            if self.recover % 2:
+                super().render(surf, offset=offset)
 
     def jump(self):
         if self.wall_slide and self.wall_jump:
