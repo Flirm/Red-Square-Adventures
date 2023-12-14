@@ -396,6 +396,13 @@ class Player(PhysicsEntity):
         self.dashing = 0
         self.attacking = False
         self.reflect_bullet = True
+        '''
+        unlockables (change to true if you need to use/test):
+        self.reflect_bullet
+        self.can_dash
+        self.wall_jump
+        self.double_jump
+        '''
 
 
     def update(self, tilemap, movement=(0 ,0)):
