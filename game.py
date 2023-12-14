@@ -128,7 +128,8 @@ class Game:
             'shoot' : load_sound('shoot.wav'),
             'sword_wiff' : load_sound('slash_wiff.mp3', 0.5),
             'sword_hit' : load_sound('slash_hit.wav', 0.5),
-            'dash' : load_sound('dash.mp3')
+            'dash' : load_sound('dash.mp3'),
+            'sword_reflect' : load_sound('reflect.mp3')
         }
 
     def menus(self):
@@ -246,14 +247,16 @@ class Game:
 
     def run(self):
 
-        pygame.mixer.set_num_channels(5)
+        pygame.mixer.set_num_channels(8)
         '''
         Chanels description:
         0 : jump
         1 : dash
-        2 : sword sounds
-        3 : shoot
-        4 : background music
+        2 : sword hit
+        3 : sword wiff
+        4 : shoot
+        5 : background music
+        6 : sword reflect
         '''
 
         #game loop
@@ -314,8 +317,10 @@ class Game:
                 #if projectile collides with solid tile, gets deleted
                 if self.tilemap.solid_check(projectile[0]) or projectile[2] > 360:
                     self.projectiles.remove(projectile)
+                #if player has reflecting hability unlocked, can reflect bullets with attack
                 elif self.attack_hitbox != None and self.player.reflect_bullet:
                     if self.attack_hitbox.collidepoint(projectile[0]):
+                        play_sound(self.sounds['sword_reflect'], 6)
                         projectile[1] = -projectile[1]
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:

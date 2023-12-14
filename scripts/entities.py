@@ -178,7 +178,7 @@ class EnemyCylinder(PhysicsEntity):
                 self.in_recover = True
                 self.lock_in = False
                 self.set_action('recover')
-                play_sound(self.game.sounds['shoot'], 3)
+                play_sound(self.game.sounds['shoot'], 4)
 
                 #if looking left and player at left
                 if (self.flip):
@@ -395,7 +395,7 @@ class Player(PhysicsEntity):
         self.can_dash = False
         self.dashing = 0
         self.attacking = False
-        self.reflect_bullet = False
+        self.reflect_bullet = True
         '''
         unlockables (change to true if you need to use/test):
         self.reflect_bullet
@@ -513,13 +513,13 @@ class Player(PhysicsEntity):
 
     def attack(self):
         if not self.wall_slide and abs(self.dashing) < 50 and not self.attacking:
-            play_sound(self.game.sounds['sword_wiff'], 2)
+            play_sound(self.game.sounds['sword_wiff'], 3)
             self.set_action('attack')
             self.attacking = True
             if self.flip:
-                self.atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1], 26, self.size[1])
+                self.atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1] - 5, 26, self.size[1] + 10)
             else:
-                self.atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1], 26, self.size[1])
+                self.atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1] - 5, 26, self.size[1] + 10)
             return self.atk_rect
         else:
             return None
