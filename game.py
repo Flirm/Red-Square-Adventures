@@ -304,7 +304,7 @@ class Game:
             self.player.render(self.display, offset=render_scroll)
 
             #projectile list has the following format for each element
-            # [[x, y], direction, timer]
+            # [[x, y], direction, timer, owner]
             for projectile in self.projectiles.copy():
                 #update x value
                 projectile[0][0] += projectile[1]
@@ -313,19 +313,27 @@ class Game:
                 #defines image and blit
                 img = self.assets['projectile']
                 self.display.blit(img, (projectile[0][0] - img.get_width()/2 - render_scroll[0], projectile[0][1] - img.get_height()/2 - render_scroll[1]))
-                
                 #if projectile collides with solid tile, gets deleted
                 if self.tilemap.solid_check(projectile[0]) or projectile[2] > 360:
                     self.projectiles.remove(projectile)
+                #if player reflected a bullet, deals damage to enemies
+                elif projectile[3] == 'player':
+                    for enemy in self.enemies.copy():
+                        if enemy.rect().collidepoint(projectile[0]):
+                            play_sound(self.sounds['sword_hit'] , 2)
+                            self.enemies.remove(enemy)
+                            self.projectiles.remove(projectile)
                 #if player has reflecting hability unlocked, can reflect bullets with attack
                 elif self.attack_hitbox != None and self.player.reflect_bullet:
                     if self.attack_hitbox.collidepoint(projectile[0]):
                         play_sound(self.sounds['sword_reflect'], 6)
                         projectile[1] = -projectile[1]
+                        projectile[3] = 'player'
                 #check if not in dash (player is invencible during dash)
                 elif abs(self.player.dashing) < 50:
                     if self.player.rect().collidepoint(projectile[0]):
                         self.projectiles.remove(projectile)
+                
 
             #rendering particles
             for particle in self.particles.copy():

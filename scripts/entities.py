@@ -182,10 +182,10 @@ class EnemyCylinder(PhysicsEntity):
 
                 #if looking left and player at left
                 if (self.flip):
-                    self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx - 7, self.rect().centery], -1.5, 0, 'enemy'])
                 #if looking right and player at right
                 else:
-                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0])
+                    self.game.projectiles.append([[self.rect().centerx + 7, self.rect().centery], +1.5, 0, 'enemy'])
 
         #if x distance < 8 tiles (128 pixels) and y distance < 1 tile (16 pixels) and not locked in, enemy moves towards player 
         elif (abs(dis[0] < 128)) and (abs(dis[1]) < 10):
@@ -517,9 +517,9 @@ class Player(PhysicsEntity):
             self.set_action('attack')
             self.attacking = True
             if self.flip:
-                self.atk_rect = pygame.Rect(self.pos[0]-34, self.pos[1] - 5, 26, self.size[1] + 10)
+                self.atk_rect = pygame.Rect(self.pos[0]-26, self.pos[1] - 5, 26, self.size[1] + 10)
             else:
-                self.atk_rect = pygame.Rect(self.pos[0]+8,self.pos[1] - 5, 26, self.size[1] + 10)
+                self.atk_rect = pygame.Rect(self.pos[0],self.pos[1] - 5, 26, self.size[1] + 10)
             return self.atk_rect
         else:
             return None
