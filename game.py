@@ -138,6 +138,10 @@ class Game:
 
     def menus(self):
 
+        pygame.mixer.music.load('data/music/Grass_Adventure_64.mp3')
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play(-1)
+
         #defines sarting variables
         self.current_menu = 'main'
         self.current_button = 0
@@ -163,8 +167,6 @@ class Game:
         new_color_button.replace((250, 116, 27), (250, 143, 65))
         del new_color_button
 
-
-        pygame.mixer.set_num_channels(2)
 
         while True:
             
@@ -252,6 +254,9 @@ class Game:
     def run(self):
 
         pygame.mixer.set_num_channels(8)
+        pygame.mixer.music.load('data/music/Ninja_Slapper.mp3')
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play(-1)
         '''
         Chanels description:
         0 : jump
@@ -310,6 +315,8 @@ class Game:
                     play_sound(self.sounds['sword_hit'], 2)
                     self.player.life -= 1
                     self.player.recover = 80
+                if enemy.pos[1] > 500:
+                    self.enemies.remove(enemy)
 
 
             #updates player position
@@ -434,22 +441,23 @@ class Game:
             if len(self.enemies) == 0:
                 self.level += 1
                 self.player.life = 5
+                self.player.reset()
 
-                if self.level == 5:
+                if self.level == 4:
                     self.transition('dash')
                     self.player.can_dash = True
-                elif self.level == 10:
+                elif self.level == 7:
                     self.transition('wall_jump')
                     self.player.wall_jump = True
-                elif self.level == 15:
+                elif self.level == 10:
                     self.transition('double_jump')
                     self.player.double_jump = True
-                elif self.level == 20:
+                elif self.level == 12:
                     self.transition('reflect_bullet')
                     self.player.reflect_bullet = True
-                elif self.level == 25:
+                elif self.level == 15:
                     self.level = 0
-                    self.player.reset()
+                    self.player.reset_all()
                     self.final_messenge()
                     return
 

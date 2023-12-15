@@ -54,7 +54,7 @@ class Editor:
 
         #load map
         try:
-            self.tilemap.load('data/maps/1.json')
+            self.tilemap.load('data/maps/6.json')
         except FileNotFoundError:
             pass
 
@@ -195,7 +195,7 @@ class Editor:
                         self.tilemap.autotile()
                     #save map
                     if event.key == pygame.K_o:
-                        self.tilemap.save('data/maps/1.json')
+                        self.tilemap.save('data/maps/6.json')
                     #holding shift enables scroll between tile variants
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True

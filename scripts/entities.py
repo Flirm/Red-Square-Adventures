@@ -338,7 +338,7 @@ class Player(PhysicsEntity):
         self.jumps = 1
         self.double_jump = False
         self.wall_slide = False
-        self.wall_jump = True
+        self.wall_jump = False
         self.can_dash = False
         self.dashing = 0
         self.attacking = False
@@ -479,15 +479,27 @@ class Player(PhysicsEntity):
         else:
             return None
         
-    def reset(self):
+    def reset_all(self):
         self.life = 5
         self.air_time = 0
         self.jumps = 1
         self.double_jump = False
         self.wall_slide = False
-        self.wall_jump = True
+        self.wall_jump = False
         self.can_dash = False
         self.dashing = 0
         self.attacking = False
         self.reflect_bullet = False
-        self.recover = 0        
+        self.recover = 0   
+        self.velocity = [0,0]
+
+
+    def reset(self):
+        self.velocity = [0,0]
+        self.life = 5
+        self.air_time = 0
+        self.jumps = self.restore_jumps()
+        self.wall_slide = False
+        self.dashing = 0
+        self.attacking = False
+        self.recover = 0  
